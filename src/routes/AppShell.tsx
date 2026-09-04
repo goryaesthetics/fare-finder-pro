@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 
 export default function AppShell() {
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,8 +13,10 @@ export default function AppShell() {
   }, []);
 
   useEffect(() => {
-    if (!user) navigate("/auth", { replace: true });
-  }, [user, navigate]);
+    if (!loading && !user) navigate("/auth", { replace: true });
+  }, [loading, user, navigate]);
+
+  if (loading || !user) return null;
 
   return (
     <div className="min-h-screen bg-background">

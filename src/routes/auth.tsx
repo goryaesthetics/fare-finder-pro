@@ -11,6 +11,7 @@ export default function AuthPage() {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
@@ -23,11 +24,20 @@ export default function AuthPage() {
     const email = String(form.get("email") ?? "");
     const password = String(form.get("password") ?? "");
     setError(null);
+    setNotice(null);
     setPending(true);
     try {
-      if (mode === "in") await signIn(email, password);
-      else await signUp(email, password);
-      navigate("/app");
+      if (mode === "in") {
+        await signIn(email, password);
+        navigate("/app");
+      } else {
+        const { needsEmailConfirmation } = await signUp(email, password);
+        if (needsEmailConfirmation) {
+          setNotice("請至信箱點擊驗證連結後再登入 — Check your email to confirm your account, then sign in.");
+        } else {
+          navigate("/app");
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -69,6 +79,7 @@ export default function AuthPage() {
         </Tabs>
 
         {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
+        {notice ? <p className="mt-4 text-sm text-muted-foreground">{notice}</p> : null}
       </div>
     </div>
   );
