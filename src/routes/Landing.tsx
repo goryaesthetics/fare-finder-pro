@@ -1,26 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Plane, BellRing, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/Reveal";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Flight Price Notifier — 機票降價通知" },
-      {
-        name: "description",
-        content:
-          "設定台北出發的航線與目標價，機票降價就 email 通知你。Set a route and a target price — we email you when the fare drops.",
-      },
-      { property: "og:title", content: "Flight Price Notifier — 機票降價通知" },
-      {
-        property: "og:description",
-        content: "Set a route and a target price — we email you when the fare drops.",
-      },
-    ],
-  }),
-  component: Landing,
-});
 
 const features = [
   {
@@ -43,7 +25,11 @@ const features = [
   },
 ];
 
-function Landing() {
+export default function Landing() {
+  useEffect(() => {
+    document.title = "Flight Price Notifier — 機票降價通知";
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">

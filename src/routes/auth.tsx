@@ -1,5 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,29 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/lib/auth";
 
-export const Route = createFileRoute("/auth")({
-  head: () => ({
-    meta: [
-      { title: "Sign in / 登入 — Flight Price Notifier" },
-      {
-        name: "description",
-        content: "登入或註冊 Flight Price Notifier，開始追蹤台北出發的機票價格。",
-      },
-      { property: "og:title", content: "Sign in / 登入 — Flight Price Notifier" },
-      {
-        property: "og:description",
-        content: "Sign in or create an account to start tracking flight prices.",
-      },
-    ],
-  }),
-  component: AuthPage,
-});
-
-function AuthPage() {
+export default function AuthPage() {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    document.title = "Sign in / 登入 — Flight Price Notifier";
+  }, []);
 
   async function handle(mode: "in" | "up", event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,7 +27,7 @@ function AuthPage() {
     try {
       if (mode === "in") await signIn(email, password);
       else await signUp(email, password);
-      await navigate({ to: "/app" });
+      navigate("/app");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
